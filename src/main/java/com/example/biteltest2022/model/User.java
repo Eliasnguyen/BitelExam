@@ -1,8 +1,21 @@
-package model;
+package com.example.biteltest2022.model;
 
+import javax.persistence.*;
+import java.util.List;
+
+@Entity
+@Table(name = "tbl_user")
 public class User {
+    @Id
+    @Column(name = "id")
+    private Integer id;
+    @Column(name = "user_name")
     private String userName;
+    @Column(name = "pass_word")
     private String passWord;
+
+    @OneToMany
+    private List<Product> product;
 
     public User() {
     }
@@ -26,5 +39,10 @@ public class User {
 
     public void setPassWord(String passWord) {
         this.passWord = passWord;
+    }
+
+    public User(Integer id, String userName) {
+        this.id = id;
+        this.userName = userName;
     }
 }

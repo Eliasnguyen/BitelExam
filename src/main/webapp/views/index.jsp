@@ -1,4 +1,9 @@
+<%@ page import="com.example.biteltest2022.model.Product" %>
+<%@ page import="java.util.List" %>
+<%@ page import="com.example.biteltest2022.repository.ProductRepository" %>
+<%@ page import="org.springframework.beans.factory.annotation.Autowired" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+
 <%--
   Created by IntelliJ IDEA.
   User: admin
@@ -23,7 +28,6 @@
 <header>
     <nav class="navbar navbar-expand-md navbar-dark"
          style="background-color: tomato">
-
     </nav>
 </header>
 <br>

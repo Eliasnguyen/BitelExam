@@ -1,14 +1,21 @@
-<%--
-    Document   : items
-    Created on : Oct 24, 2019, 3:29:53 AM
-    Author     : os_hoangpn
---%>
+<%@ page import="com.example.biteltest2022.model.Product" %>
+<%@ page import="java.util.List" %>
+<%@ page import="com.example.biteltest2022.repository.ProductRepository" %>
+<%@ page import="org.springframework.beans.factory.annotation.Autowired" %>
+<%@ page import="com.example.biteltest2022.model.Item" %>
+<%! @Autowired ProductRepository productRepository; %>
+
+
 
 <!DOCTYPE html>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>All product</title>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+          crossorigin="anonymous">
 <%--    <link rel="stylesheet" href="css/items.css">--%>
     <style>
         /*            div{
@@ -29,58 +36,51 @@
     <div style="float: left; margin-left: 100px; margin-top: 50px; background-color: white; border: 3px solid coral;">
         <form action="items.jsp" method="GET">
             <input type="text" name="item_name" placeholder="Search everything you need..." style="width: 600px; height: 40px; float: left; border: none">
-            <input type="image" style="width: 50px; height: 40px; float: left" src="resources/searchbtn.png">
+            <input type="image" style="width: 30px; height: 40px; float: left" src="https://cdn.onlinewebfonts.com/svg/img_135466.png">
         </form>
     </div>
-    <div style="float: left; margin-left: 100px; margin-top: 50px;">
-        <a href="login.jsp" style="font-size: 24px; text-decoration: none; font-weight: bold; color: darkcyan">Login</a>
-        <br>
-        No account? <a href="register.jsp" style="color: red">Register Now!</a>
-    </div>
-    <div style="float: left; margin-left: 100px; margin-top: 50px;">
-        <a href="/book-store/logout.jsp">Logout</a>
-        <br>
+
 <%--        <% String mainPage = "bookstore.jsp?customerID=" + session.getAttribute("customerID") + "&name=" + session.getAttribute("name");%>--%>
 <%--        <a href="<%= mainPage%>">Go to main page</a>--%>
-    </div>
 <%--    <% }%>--%>
 </div>
-<h1>Our products based on customer choices. Updated hourly.</h1>
 <div id="items">
-<%--    <%--%>
-<%--        String itemName = request.getParameter("item_name");--%>
-<%--        ItemDAOImpl itemDAOImpl = new ItemDAOImpl();--%>
+    <%
+//        String itemName = request.getParameter("item_name");
+//        ItemDAOImpl itemDAOImpl = new ItemDAOImpl();
 
-<%--        List<Item> items = new ArrayList<Item>();--%>
-<%--        if (itemName == null || itemName.equals("")) {--%>
-<%--            items = itemDAOImpl.findAll();--%>
-<%--        } else {--%>
-<%--            items = itemDAOImpl.getItemByName(itemName);--%>
-<%--        }--%>
-<%--        Locale localeVN = new Locale("vi", "VN");--%>
-<%--        NumberFormat currencyVN = NumberFormat.getCurrencyInstance(localeVN);--%>
-<%--        for (int i = 0; i < items.size(); i++) {--%>
-<%--            int stt = i + 1;--%>
-<%--            Item item = items.get(i);--%>
-<%--    %>--%>
+
+        List<Product> items =  productRepository.findAll();
+//        if (items.get == null || itemName.equals("")) {
+//            items = itemDAOImpl.findAll();
+//        } else {
+//            items = itemDAOImpl.getItemByName(itemName);
+//        }
+//        Locale localeVN = new Locale("vi", "VN");
+//        NumberFormat currencyVN = NumberFormat.getCurrencyInstance(localeVN);
+        for (int i = 0; i < items.size(); i++) {
+            int stt = i + 1;
+            Product item = items.get(i);
+    %>
     <div class="item">
         <div class="itemImg">
-<%--            <img src="<%= "img?ImgUrl=" + item.getUrl()%>" alt="" width="200px" height="100%">--%>
+            <img src="<%= "img?ImgUrl=" + item.getImgUrl()%>" alt="" width="200px" height="100%">
         </div>
         <div class="itemInfo">
             <div style="width: 5%; height: 100%; float: left">&nbsp;</div>
             <div style="width: 90%; height: 100%; float: left">
                 <p class="itemName" style="font-weight: bold;  height: 36px">
-<%--                    <%= item.getName()%>--%>
+                    <%= item.getName()%>
                     item name
                 </p>
                 <p class="itemAuthor">
-<%--                    <%= item.getDescription()%>--%>
+                    <%= item.getShortDes()%>
                     gioi thieu
                 </p>
                 <form action="cart" method="POST" >
                     <label class="itemPrice" style="text-decoration: underline">
 <%--                        <%= currencyVN.format(item.getSalePrice())%>--%>
+                        <%=item.getPrice()%>
                         gia tien
                     </label>
                     <input name="ItemID" hidden="true" value="
@@ -97,8 +97,8 @@ id khach
             <div style="width: 50%; height: 100%; float: left">&nbsp;</div>
         </div>
     </div>
-<%--    <%}--%>
-<%--    %>--%>
+    <%}
+    %>
 </div>
 <div style="clear: both">
     <br>
