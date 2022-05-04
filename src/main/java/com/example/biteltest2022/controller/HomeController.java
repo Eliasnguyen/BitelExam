@@ -130,6 +130,16 @@ public class HomeController {
         ModelAndView mav = new ModelAndView("productDetail");
         mav.addObject(product);
         return mav;
+
+
+    }
+    @RequestMapping("/cart-by-user/{id}")
+    public ModelAndView getCartByUser(@PathVariable("id") Integer id, HttpServletRequest request){
+        List<Cart> carts = cartRepository.getCartsByUser(id);
+        HttpSession session = request.getSession();
+        ModelAndView mav = new ModelAndView("cartUser");
+        session.setAttribute("cartUser",carts);
+        return mav;
     }
 
 
