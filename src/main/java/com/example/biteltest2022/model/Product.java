@@ -21,9 +21,12 @@ public class Product {
     private float price;
     @Column(name = "n_img_url")
     private String imgUrl;
+
 //    @ManyToOne
 //    @JoinColumn(name = "user_id")
 //    private User user;
+
+
 
     public Product(Integer id, String name, User user) {
         this.id = id;
@@ -37,6 +40,8 @@ public class Product {
         this.price = price;
         this.imgUrl = imgUrl;
     }
+
+
 
     public Product() {
 
@@ -88,5 +93,17 @@ public class Product {
 
     public void setImgUrl(String imgUrl) {
         this.imgUrl = imgUrl;
+    }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", shortDes='" + shortDes + '\'' +
+                ", detailDes='" + detailDes + '\'' +
+                ", price=" + price +
+                ", imgUrl='" + imgUrl + '\'' +
+                '}';
     }
 }

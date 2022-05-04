@@ -2,6 +2,7 @@
 <%@ page import="org.springframework.beans.factory.annotation.Autowired" %>
 <%@ page import="com.example.biteltest2022.model.Product" %>
 <%@ page import="java.util.List" %>
+<%@ page import="com.example.biteltest2022.model.User" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
@@ -23,7 +24,7 @@
     <nav class="navbar navbar-expand-md navbar-dark d-flex justify-content-end"
          style="background-color: tomato; height: 4rem;">
         <div>
-            <a href="index.jsp">
+            <a href="table">
                 <i class="fa-solid fa-cart-shopping" style="margin-right: 36px"></i>
             </a>
 
@@ -32,6 +33,8 @@
 
     <br class="clr">
 </header>
+<% User user = (User) session.getAttribute("user");
+%>
 
 <div class="container">
 
@@ -47,11 +50,23 @@
                         <c:out value="${product.getImgUrl()}"/> alt="" width="200px" height="100%"></a>
                     <div class="card-body bg-light">
                         <div class="caption cntr">
-                            <p class="text-center"><strong><c:out value="${product.getName()}"/></strong></p>
-                            <p class="text-center"><strong><c:out value="${product.getPrice()}"/></strong></p>
+                            <a href="detail/${product.getId()}"><p class="text-center"><strong><c:out value="${product.getName()}"/></strong></p></a>
+                            <p class="text-center"><strong>$<c:out value="${product.getPrice()}"/></strong></p>
                             <p><c:out value="${product.getShortDes()}"/></p>
-                            <h4 class="text-center"><a class="shopBtn text-decoration-none btn btn-warning" href="#"
-                                                       title="add to cart"> Add to cart </a></h4>
+
+                            <form action="cart" method="POST" >
+<%--                                <label class="itemPrice" style="text-decoration: underline"><%= currencyVN.format(item.getSalePrice())%> </label>--%>
+                                <input name="ItemID" hidden="true" value="${product.getId()}">
+
+                                <input name="CustomerID" hidden="true" value="<%= user.getId()%>">
+
+<%--                                <input type="submit" value="Add to Cart" style="float: right;">--%>
+                                <button style="float: right;" class="shopBtn text-decoration-none btn btn-warning" title="add to cart"> Add to cart
+                                </button>
+
+<%--                            <h4 class="text-center"><a class="shopBtn text-decoration-none btn btn-warning" href="#"--%>
+<%--                                                       title="add to cart"> Add to cart </a></h4>--%>
+                            </form>
                             <br class="clr">
                         </div>
                     </div>

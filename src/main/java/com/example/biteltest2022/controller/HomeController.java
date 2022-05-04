@@ -7,20 +7,14 @@ import com.example.biteltest2022.model.User;
 import com.example.biteltest2022.repository.CartRepository;
 import com.example.biteltest2022.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import com.example.biteltest2022.repository.ProductRepository;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 @Controller
@@ -36,90 +30,107 @@ public class HomeController {
     CartRepository cartRepository;
 
     @GetMapping(value = "/hi")
-    public String getAllCategories(ModelMap modelMap) {
+    public String getAllCategories() {
         return "index";
     }
-
-
-    @PostMapping("/login")
-    public ModelAndView login(Model model, @ModelAttribute("user") User user){
-
-        if(user != null && user.getUserName().equals("abc") && user.getPassWord().equals("123")){
+    @PostMapping(value = "/hi")
+    public ModelAndView initIndex( @ModelAttribute("user") User user, HttpServletRequest request) {
+        User gotuser = login(user);
+        if(gotuser != null){
             List<Product> inst = productRepository.findAll();
-            ModelAndView mav = new ModelAndView("product2");
-            mav.addObject("list",inst);
+            ModelAndView mav = new ModelAndView("products");
+           mav.addObject("list", inst);
+            HttpSession session = request.getSession();
+            session.setAttribute("user", gotuser);
+            session.setAttribute("listProduct",inst);
             return mav;
         }
-        else return null;
+        return new ModelAndView("index");
+
     }
 
-    @GetMapping(value = "/hi3")
-    public void init(HttpServletRequest request) {
-        HttpSession session =  request.getSession();
-        String s  = new String("abc");
-        session.setAttribute("us",s);
+    private User login( @ModelAttribute("user") User user) {
+        User checkUser = userRepository.getUsersByUserNameAndPassWord(user.getUserName(), user.getPassWord());
+        if (user != null && checkUser != null) {
+            return checkUser;
+
+        }  return null;
     }
 
-    @GetMapping(value = "/hh")
-    public void get(HttpServletRequest request){
-        HttpSession session = request.getSession();
-        String as = session.getAttribute("us").toString();
-        System.out.println(as);
-    }
+
+
+
 
     @RequestMapping(value = "/insert")
-    public void insset(){
-        User user = userRepository.getById(1);
-        Product product = productRepository.getById(1);
-        Cart cart = new Cart(user);
-
+    public void insset(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        Cart cart = new Cart();
+        cart.setUser(user);
+        Map<Integer, Item> itemMap = (Map<Integer, Item>) session.getAttribute("cart");
+        Set<Integer> keys = itemMap.keySet();
         List<Item> items = new ArrayList<>();
-        Item item = new Item(product,3);
-        item.setCart(cart);
-        items.add(item);
+        for(Integer key:keys){
+            Item item = itemMap.get(key);
+            item.setCart(cart);
+            items.add(item);
+        }
+
         cart.setItems(items);
         cartRepository.save(cart);
+        session.removeAttribute("cart");
 
     }
-//    @RequestMapping(value = "/create")
-//    public void createAndItem(HttpServletRequest re, HttpSession session){
-//        Product product = productRepository.getById(1);
-//        Item item= new Item(product,1);
-//        if (!session.isNew()) {
-//            session.invalidate();
-//        }
-//
-//        addCart(item,session);
-//
-//
-//    }
 
-    @RequestMapping(value = "/cart")
-    public void addCart( HttpSession session){
-        Product product = productRepository.getById(1);
-        Item item= new Item(product,1);
+
+    @PostMapping(value = "/cart")
+    public  void addCart(HttpServletRequest request, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        Product product = productRepository.getById(Integer.parseInt(request.getParameter("ItemID")));
+        System.out.println(product);
+
+        Item item = new Item();
+        item.setQuantity(1);
+        item.setProduct(product);
+
 
         Map<Integer, Item> itemCart = (Map<Integer, Item>) session.getAttribute("cart");
-        if(itemCart == null){
+        if (itemCart == null) {
             itemCart = new HashMap<>();
         }
         Integer productId = item.getProduct().getId();
-        if(itemCart.containsKey(productId)){
+        if (itemCart.containsKey(productId)) {
             item = itemCart.get(productId);
-            item.setQuantity(item.getQuantity() +1);
+            item.setQuantity(item.getQuantity() + 1);
+            itemCart.put(productId, item);
+        } else {
             itemCart.put(productId, item);
         }
-        else {
-            itemCart.put(productId, item);
-        }
-        session.setAttribute("cart",itemCart);
+        session.setAttribute("cart", itemCart);
+
     }
 
     @RequestMapping(value = "/show")
-    public void show(HttpServletRequest request){
+    public void show(HttpServletRequest request) {
         HttpSession session = request.getSession();
         Map<Integer, Item> itemCart = (Map<Integer, Item>) session.getAttribute("cart");
-        System.out.println(itemCart.get(1).getQuantity());
+        itemCart.forEach((key, value) -> {
+            System.out.println(value.toString());
+        });
     }
+
+    @RequestMapping("/table")
+    public ModelAndView showTable(){
+        return new ModelAndView("checkout");
+    }
+
+    @RequestMapping("/detail/{id}")
+    public ModelAndView showDetail(@PathVariable("id") Integer id  ){
+        Product product = productRepository.getById(id);
+        ModelAndView mav = new ModelAndView("productDetail");
+        mav.addObject(product);
+        return mav;
+    }
+
 
 }

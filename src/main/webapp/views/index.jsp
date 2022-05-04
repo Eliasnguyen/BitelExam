@@ -40,7 +40,7 @@
             <h2> Đăng nhập </h2>
 
 
-            <form:form action="login" name="dangnhap"  method="post" >
+            <form:form action="hi" name="dangnhap"  method="post" >
 
                 <fieldset class="form-group">
                     <label>UserName</label> <input type="text" class="form-control" name="userName" id="userName"

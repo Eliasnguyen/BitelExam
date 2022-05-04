@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository;
 public interface UserRepository extends JpaRepository<User, Integer> {
     @Override
     User getById(Integer integer);
+    User getUsersByUserNameAndPassWord(String useName, String pass);
 }

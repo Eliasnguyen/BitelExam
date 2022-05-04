@@ -43,6 +43,16 @@ public class Item {
 
     }
 
+    public Item(Product product) {
+        this.product = product;
+    }
+    public Item(Item item){
+        this.id = item.getId();
+        this.product = item.getProduct();
+        this.quantity = item.getQuantity();
+        this.cart = item.getCart();
+    }
+
     public Integer getId() {
         return id;
     }
@@ -73,5 +83,10 @@ public class Item {
 
     public void setCart(Cart cart) {
         this.cart = cart;
+    }
+
+    @Override
+    public String toString() {
+        return "Item{}" + product.getName() + quantity;
     }
 }
